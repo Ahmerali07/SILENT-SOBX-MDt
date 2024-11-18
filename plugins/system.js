@@ -12,7 +12,8 @@ cmd({
 },
 async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
 try{
-let status = `*SILENT-SOBX-MD UPTIME LIST*
+let status = `*╭──────────●●►*
+*SILENT-SOBX-MD UPTIME LIST*
 
 *UPTIME:*  ${runtime(process.uptime())}
 
@@ -21,8 +22,10 @@ let status = `*SILENT-SOBX-MD UPTIME LIST*
 *HOSTNAME:* ${os.hostname()}
 
 *OWNER:* *SILENT LOVER⁴³²*
+*╰──────────●●►*
 `
-return reply(`${status}`)
+await conn.sendMessage(from,{image:{url:config.ALIVE_IMG},caption:`${status}`},{quoted:mek})
+
 }catch(e){
 console.log(e)
 reply(`${e}`)

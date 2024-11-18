@@ -1,45 +1,47 @@
-const config = require('../config')
-const {cmd , commands} = require('../command')
+const { cmd } = require('../command');
+
 cmd({
     pattern: "owner",
-    desc: "im owner",
-    react: "👩‍💻",
+    react: "👑", // Reaction emoji when the command is triggered
+    alias: ["ud", "bot"],
+    desc: "Get owner number",
     category: "main",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-let owner =` 
-*HEAR IS BOT OWNER INFO*
-*NAME:-* *USMAN.S*
-*AGE:-* *20 YEARS*
-*PUBLIC NAME:-* *SILENTLOVER*
+}, 
+async (conn, mek, m, { from }) => {
+    try {
+        // Owner's contact info
+        const ownerNumber = '+923096287432'; // Replace this with the actual owner number
+        const ownerName = '➺ѕเℓεɳƭ_ℓσѵε૨࿐'; // Replace this with the owner's name
+        const organization = 'UD TEAM'; // Optional: replace with the owner's organization
 
-> *BY SILENTLOVER432*
-`
-await conn.sendMessage(from, { text: owner ,
-  contextInfo: {
-    mentionedJid: [ '' ],
-    groupMentions: [],
-    forwardingScore: 999,
-    isForwarded: false,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: '120363232588171807@newsletter',
-      newsletterName: "SILENTLOVER432",
-      serverMessageId: 999
-    },
-externalAdReply: { 
-title: 'SILENTLOVER432',
-body: `${pushname}`,
-mediaType: 1,
-sourceUrl: "https://wa.me/+923096287432?text=HY SILENTLOVER4 I'M MSG YOU FROM OWNER ADS" ,
-thumbnailUrl: "https://telegra.ph/file/ffda25ad4092b3328d551.jpg" ,
-renderLargerThumbnail: true,
-showAdAttribution: true
-}
-}}, { quoted: mek})
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
+        // Create a vCard (contact card) for the owner
+        const vcard = 'BEGIN:VCARD\n' +
+                      'VERSION:3.0\n' +
+                      `FN:${ownerName}\n` +  // Full Name
+                      `ORG:${organization};\n` +  // Organization (Optional)
+                      `TEL;type=CELL;type=VOICE;waid=${ownerNumber.replace('+', '')}:${ownerNumber}\n` +  // WhatsApp ID and number
+                      'END:VCARD';
+
+        // Send the vCard first
+        const sentVCard = await conn.sendMessage(from, {
+            contacts: {
+                displayName: ownerName,
+                contacts: [{ vcard }]
+            }
+        });
+
+        // Send a reply message that references the vCard
+        await conn.sendMessage(from, {
+            text: `This is the owner's contact: ${ownerName}`,
+            contextInfo: {
+                mentionedJid: [ownerNumber.replace('+923096287432', '') + '+923096287432@s.whatsapp.net'], // Mention the owner
+                quotedMessageId: sentVCard.key.id // Reference the vCard message
+            }
+        }, { quoted: mek });
+
+    } catch (error) {
+        console.error(error);
+        await conn.sendMessage(from, { text: 'Sorry, there was an error fetching the owner contact.' }, { quoted: mek });
+    }
 });
